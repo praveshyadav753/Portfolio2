@@ -66,8 +66,14 @@ const AboutMe = () => {
         const ctx = gsap.context(() => {
             // Parallax for the main content block
             gsap.to(contentRef.current, {
-                y: -150, // Moves up as you scroll down
-                skew:50,
+                // y: -150, // Moves up as you scroll down
+                duration: 3,
+    x: 10,
+    y: 190,
+    z: 0,
+    rotationX: 80,
+    rotationY: 22,
+    scale: 1.1,
                 ease: "none",
                 scrollTrigger: {
                     trigger: sectionRef.current,
@@ -79,8 +85,8 @@ const AboutMe = () => {
 
             // Parallax for the profile image
             gsap.to(profileImageRef.current, {
-                y: 100, // Moves down slightly faster than content
-                x: -50, // Moves left slightly
+                y: 70, // Moves down slightly faster than content
+                x: -20, // Moves left slightly
                 scale: 1.05, // Slightly scales up
                 ease: "none",
                 scrollTrigger: {

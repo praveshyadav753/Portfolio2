@@ -5,5 +5,6 @@ import SkillsSection from "./components/skills/skills";
 import WorkExperience from "./components/work/Work";
 import ContactMe from "./components/contact/contactme";
 import Gitactivity from "./components/github/activity";
+import ProjectsSection from "./components/projects/projects";
 
-export {Intro,Navbar,AboutMe,SkillsSection,WorkExperience,ContactMe,Gitactivity}
+export {Intro,Navbar,AboutMe,SkillsSection,WorkExperience,ContactMe,Gitactivity,ProjectsSection}

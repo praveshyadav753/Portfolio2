@@ -22,7 +22,7 @@ function Intro() { // Renamed function to Intro for consistency and best practic
             // Parallax effects
             // Parallax for the main content block
             gsap.to(heroRef.current.querySelector('.hero-content-wrapper'), {
-                y: -90, // Move up slightly as we scroll down
+                y: -190, // Move up slightly as we scroll down
                 ease: "none",
                 scrollTrigger: {
                     trigger: heroRef.current,

@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { useRef } from 'react'; // useRef is always imported from 'react'
 import gsap from 'gsap';
+import mySkillsData from './components/skills/SkillsData';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Register the ScrollTrigger plugin with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
 // Import your custom components
-import { AboutMe, ContactMe, Gitactivity, Intro, Navbar, SkillsSection, WorkExperience } from './Exports';
+import { AboutMe, ContactMe, Gitactivity, Intro, Navbar, ProjectsSection, SkillsSection, WorkExperience } from './Exports';
 import Footer from './components/foooter/footer';
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
             if (circle) {
                 gsap.to(circle, {
                   // y:450,
-                     y: (i % 2 === 0 ? 400 : -300), // Move circles in opposite directions
+                     y: (i % 2 === 0 ? 500 : 500), // Move circles in opposite directions
                     x: (i % 3 === 0 ? 100 : -100), // Vary x movement
                     scale: 0.8, // Scale the circles down significantly
                     opacity: 0.4, // Increase opacity subtly
@@ -72,8 +73,9 @@ function App() {
             <Navbar />
             <Intro />
             <AboutMe />
-            <SkillsSection />
+            <SkillsSection skills={mySkillsData}/>
             <WorkExperience />
+            <ProjectsSection/>
             <Gitactivity />
             <ContactMe />
             <Footer/>
