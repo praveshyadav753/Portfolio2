@@ -1,0 +1,338 @@
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Github, Linkedin, Mail, Code, Star, Briefcase, User } from 'lucide-react';
+
+// Register ScrollTrigger plugin once at the top level
+gsap.registerPlugin(ScrollTrigger);
+
+// Hero Section Component
+const HeroSection = () => {
+  const heroRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      heroTl.from(heroRef.current.querySelector('.hero-name'), { y: 50, opacity: 0, duration: 1 })
+            .from(heroRef.current.querySelector('.hero-title'), { y: 50, opacity: 0, duration: 1, delay: -0.8 })
+            .from(heroRef.current.querySelector('.hero-description'), { opacity: 0, duration: 1, delay: -0.6 })
+            .from(heroRef.current.querySelector('.hero-image'), { scale: 0.8, opacity: 0, duration: 1, delay: -0.8, ease: "back.out(1.7)" })
+            .from(heroRef.current.querySelectorAll('.hero-social a'), { opacity: 0, y: 20, stagger: 0.2, duration: 0.6, delay: -0.5 });
+    }, heroRef); // Scope GSAP animations to heroRef
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={heroRef} className="relative h-screen flex items-center justify-center text-center p-8 overflow-hidden">
+      {/* Background gradient circles for visual interest */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+        <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center md:space-x-12">
+        <div className="hero-content text-center md:text-left mb-8 md:mb-0">
+          <h1 className="hero-name text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4">
+            Hi, I'm <span className="text-teal-400">Jane Doe</span>.
+          </h1>
+          <p className="hero-title text-2xl md:text-4xl font-semibold text-gray-300 mb-6">
+            A Passionate <span className="text-purple-300">Software Engineer</span>.
+          </p>
+          <p className="hero-description text-lg md:text-xl text-gray-400 mb-8 max-w-2xl">
+            I build robust and scalable applications with a focus on clean code and exceptional user experiences.
+          </p>
+          <div className="hero-social flex justify-center md:justify-start space-x-6">
+            <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
+              <Github size={32} />
+            </a>
+            <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
+              <Linkedin size={32} />
+            </a>
+            <a href="mailto:your.email@example.com" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
+              <Mail size={32} />
+            </a>
+          </div>
+        </div>
+        <div className="hero-image flex-shrink-0 mt-8 md:mt-0">
+          <img
+            src="https://placehold.co/300x300/1a202c/a0aec0?text=Profile"
+            alt="Profile Picture"
+            className="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-teal-400 shadow-2xl object-cover"
+            onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/300x300/1a202c/a0aec0?text=Profile"; }}
+          />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// About Section Component
+const AboutSection = () => {
+  const aboutRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(aboutRef.current.querySelector('.about-heading'), {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: aboutRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+      gsap.from(aboutRef.current.querySelectorAll('.about-paragraph'), {
+        opacity: 0,
+        y: 20,
+        stagger: 0.3,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: aboutRef.current,
+          start: "top 70%",
+          toggleActions: "play none none reverse"
+        }
+      });
+    }, aboutRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="about" ref={aboutRef} className="container mx-auto py-20 px-8">
+      <h2 className="about-heading text-4xl md:text-5xl font-bold text-center text-white mb-12 flex items-center justify-center">
+        <User className="mr-4 text-teal-400" size={40} /> About Me
+      </h2>
+      <div className="max-w-3xl mx-auto bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
+        <p className="about-paragraph text-lg text-gray-300 leading-relaxed mb-6">
+          Hello! I'm Jane Doe, a dedicated Software Engineer with a passion for crafting innovative solutions. My journey in tech began with a fascination for how things work, evolving into a drive to build robust and user-friendly applications. I thrive in dynamic environments where I can continuously learn and contribute to meaningful projects.
+        </p>
+        <p className="about-paragraph text-lg text-gray-300 leading-relaxed mb-6">
+          With a strong foundation in full-stack development, I specialize in creating scalable web applications using modern frameworks and technologies. I enjoy tackling complex problems and transforming ideas into tangible products that make a real impact. My expertise spans from front-end user interfaces to back-end system architecture.
+        </p>
+        <p className="about-paragraph text-lg text-gray-300 leading-relaxed">
+          Outside of coding, I enjoy exploring new technologies, contributing to open-source projects, and staying up-to-date with the latest industry trends. I believe in continuous improvement and am always eager to take on new challenges.
+        </p>
+      </div>
+    </section>
+  );
+};
+
+// Skills Section Component
+const SkillsSection = () => {
+  const skillsRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(skillsRef.current.querySelector('.skills-heading'), {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: skillsRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+      gsap.from(skillsRef.current.querySelectorAll('.skill-category'), {
+        opacity: 0,
+        y: 30,
+        stagger: 0.4,
+        duration: 1,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+          trigger: skillsRef.current,
+          start: "top 70%",
+          toggleActions: "play none none reverse"
+        }
+      });
+      gsap.from(skillsRef.current.querySelectorAll('.skill-item'), {
+        opacity: 0,
+        scale: 0.8,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: skillsRef.current,
+          start: "top 60%",
+          toggleActions: "play none none reverse"
+        }
+      });
+    }, skillsRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="skills" ref={skillsRef} className="container mx-auto py-20 px-8">
+      <h2 className="skills-heading text-4xl md:text-5xl font-bold text-center text-white mb-12 flex items-center justify-center">
+        <Code className="mr-4 text-teal-400" size={40} /> My Skills
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        {/* Frontend */}
+        <div className="skill-category bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+          <h3 className="text-2xl font-semibold text-teal-400 mb-4 flex items-center">
+            <Star className="mr-2" size={24} /> Frontend
+          </h3>
+          <ul className="space-y-3 text-gray-300">
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>React.js</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>Next.js</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>JavaScript (ES6+)</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>TypeScript</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>HTML5 & CSS3</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>Tailwind CSS</li>
+          </ul>
+        </div>
+
+        {/* Backend */}
+        <div className="skill-category bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+          <h3 className="text-2xl font-semibold text-teal-400 mb-4 flex items-center">
+            <Briefcase className="mr-2" size={24} /> Backend
+          </h3>
+          <ul className="space-y-3 text-gray-300">
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>Node.js</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>Express.js</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>Python (Django/Flask)</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>RESTful APIs</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-blue-400 rounded-full mr-3"></span>GraphQL</li>
+          </ul>
+        </div>
+
+        {/* Databases & Tools */}
+        <div className="skill-category bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+          <h3 className="text-2xl font-semibold text-teal-400 mb-4 flex items-center">
+            <Code className="mr-2" size={24} /> Databases & Tools
+          </h3>
+          <ul className="space-y-3 text-gray-300">
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>MongoDB</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>PostgreSQL</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>Firebase / Firestore</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>Git & GitHub</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>Docker</li>
+            <li className="skill-item flex items-center"><span className="w-2 h-2 bg-green-400 rounded-full mr-3"></span>AWS / Google Cloud</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Contact Section Component
+const ContactSection = () => {
+  const contactRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(contactRef.current.querySelector('.contact-heading'), {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: contactRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+      gsap.from(contactRef.current.querySelectorAll('.contact-item'), {
+        opacity: 0,
+        x: -50,
+        stagger: 0.2,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: contactRef.current,
+          start: "top 70%",
+          toggleActions: "play none none reverse"
+        }
+      });
+    }, contactRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="contact" ref={contactRef} className="container mx-auto py-20 px-8">
+      <h2 className="contact-heading text-4xl md:text-5xl font-bold text-center text-white mb-12 flex items-center justify-center">
+        <Mail className="mr-4 text-teal-400" size={40} /> Get In Touch
+      </h2>
+      <div className="max-w-2xl mx-auto bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700 text-center">
+        <p className="text-lg text-gray-300 mb-8">
+          I'm always open to new opportunities, collaborations, and interesting projects. Feel free to reach out!
+        </p>
+        <div className="space-y-6">
+          <div className="contact-item flex items-center justify-center text-gray-300 text-xl">
+            <Mail className="mr-4 text-teal-400" size={28} />
+            <a href="mailto:your.email@example.com" className="hover:text-white transition-colors duration-300">your.email@example.com</a>
+          </div>
+          <div className="contact-item flex items-center justify-center text-gray-300 text-xl">
+            <Linkedin className="mr-4 text-teal-400" size={28} />
+            <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">linkedin.com/in/yourusername</a>
+          </div>
+          <div className="contact-item flex items-center justify-center text-gray-300 text-xl">
+            <Github className="mr-4 text-teal-400" size={28} />
+            <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">github.com/yourusername</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Main App Component
+const App = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 font-inter antialiased">
+      {/* Navbar (Optional, but good for context) */}
+      <nav className="fixed w-full z-10 bg-gray-900 bg-opacity-80 backdrop-blur-sm p-4 shadow-lg">
+        <div className="container mx-auto flex justify-between items-center">
+          <a href="#" className="text-2xl font-bold text-teal-400">YourName.dev</a>
+          <div className="space-x-6">
+            <a href="#about" className="text-gray-300 hover:text-teal-400 transition-colors duration-300">About</a>
+            <a href="#skills" className="text-gray-300 hover:text-teal-400 transition-colors duration-300">Skills</a>
+            <a href="#contact" className="text-gray-300 hover:text-teal-400 transition-colors duration-300">Contact</a>
+          </div>
+        </div>
+      </nav>
+
+      <HeroSection />
+      <AboutSection />
+      <SkillsSection />
+      <ContactSection />
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-gray-500 text-sm">
+        <p>&copy; {new Date().getFullYear()} Jane Doe. All rights reserved.</p>
+      </footer>
+
+      {/* Tailwind CSS Animation Classes */}
+      <style jsx>{`
+        @keyframes blob {
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite cubic-bezier(0.6, 0.01, 0.4, 1);
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default App;
