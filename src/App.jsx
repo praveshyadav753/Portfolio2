@@ -4,6 +4,7 @@ import { useRef } from 'react'; // useRef is always imported from 'react'
 import gsap from 'gsap';
 import mySkillsData from './components/skills/SkillsData';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import workExperiences from './components/work/experiencedata'
 
 // Register the ScrollTrigger plugin with GSAP
 gsap.registerPlugin(ScrollTrigger);
@@ -74,7 +75,8 @@ function App() {
             <Intro />
             <AboutMe />
             <SkillsSection skills={mySkillsData}/>
-            <WorkExperience />
+            <WorkExperience workExperiences={workExperiences} />
+
             <ProjectsSection/>
             <Gitactivity />
             <ContactMe />
