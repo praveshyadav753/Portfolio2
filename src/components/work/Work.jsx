@@ -126,6 +126,19 @@ const WorkExperience = ({ workExperiences }) => {
                                 className={`w-full md:w-[calc(50%-30px)] p-6 bg-gray-800 rounded-lg shadow-xl border border-gray-700 hover:border-purple-600 transition-all duration-300 transform md:hover:scale-[1.02] ${
                                     index % 2 === 0 ? "md:pr-10 md:text-right" : "md:pl-10 md:text-left"
                                 }`}
+                            style={{
+       
+        backgroundColor: "rgba(26, 43, 61, 0.1)", // More transparent base for glossy effect
+        border: "2px solid rgba(0, 20, 25, 0.6)", // Slightly transparent border
+        color: "white",
+        backdropFilter: "blur(15px)", // Apply blur directly to the card for the glossy effect
+        textAlign: "center",
+        overflow: "hidden",
+        backgroundImage: `
+          radial-gradient(circle at 15% 85%, rgba(75, 1, 105, 0.2) 0%, transparent 50%),
+          radial-gradient(circle at 85% 15%, rgba(22, 27, 12, 0.3) 0%, transparent 60%)
+        `, 
+      }}
                             >
                                 <div className="experience-header mb-2">
                                     <h3 className="text-2xl font-bold text-white">{job.title}</h3>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import GitHubCalendar from 'react-github-calendar';
 import { gsap } from "gsap"; // Import GSAP
+import './github.css'
 
 // SVG Icons (keeping them as is, they are good!)
 const GithubIcon = () => (
@@ -204,14 +205,14 @@ const Gitactivity = () => {
       <div className="absolute top-1/4 right-20 w-80 h-80 bg-pink-600 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
       <div className="absolute bottom-10 left-1/3 w-72 h-72 bg-teal-600 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
 
-      <div className="relative z-10 mx-auto max-w-6xl shadow-2xl rounded-2xl p-6 lg:px-16 md:p-8 bg-gray-900/80 backdrop-blur-sm main-content-container">
-        <h1 ref={titleRef} className="text-3xl md:text-4xl font-extrabold text-white mb-6 text-center flex items-center justify-center gap-3">
-          <GithubIcon className="w-9 h-9 text-purple-400" /> GitHub Overview
+      <div className="relative  z-10 mx-auto max-w-6xl shadow-2xl rounded-2xl p-6 lg:px-16 md:p-8  backdrop-blur-sm main-content-container">
+        <h1 ref={titleRef} className=" p-5 text-3xl md:text-6xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-teal-200 flex items-center justify-center whitespace-nowrap gap-3">
+          <span><GithubIcon className="w-9 h-9 " /></span> GitHub Overview
         </h1>
 
         {error && (
           <div
-            className="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg relative mb-6"
+            className="gredient bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg relative mb-6"
             role="alert"
           >
             <strong className="font-bold">Error!</strong>
@@ -228,7 +229,7 @@ const Gitactivity = () => {
         {!loading && userData && (
           <>
             {/* User Profile Summary */}
-            <div ref={profileRef} className="flex flex-col md:flex-row items-center md:items-start gap-6 bg-gray-800 p-6 rounded-xl mb-8 shadow-lg border border-gray-700 transition-all duration-300 hover:border-purple-500">
+            <div ref={profileRef} className="gredient flex flex-col md:flex-row items-center md:items-start gap-6  p-6 rounded-xl mb-8 shadow-lg border border-gray-700 transition-all duration-300 hover:border-purple-500">
               <img
                 src={
                   userData.avatar_url ||
@@ -237,7 +238,7 @@ const Gitactivity = () => {
                     .toUpperCase()}`
                 }
                 alt={`${username}'s avatar`}
-                className="w-32 h-32 rounded-full border-4 border-purple-500 shadow-md transform hover:scale-105 transition-transform duration-300"
+                className="w-32 h-32 rounded-full border-4 border-purple-200 shadow-md transform hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = `https://placehold.co/128x128/333333/dddddd?text=${username
@@ -304,9 +305,9 @@ const Gitactivity = () => {
             </div>
 
             {/* Stats and Contributions */}
-            <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div ref={statsRef} className="grid gredient grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {/* Total Repositories */}
-              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700 transition-all duration-300 hover:border-pink-500">
+              <div className=" p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700 transition-all duration-300 hover:border-pink-500">
                 <RepositoryIcon className="w-10 h-10 text-pink-400 mb-3" />
                 <h3 className="text-xl font-semibold text-gray-200">
                   Total Repositories
@@ -317,7 +318,7 @@ const Gitactivity = () => {
               </div>
 
               {/* Followers */}
-              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700 transition-all duration-300 hover:border-teal-500">
+              <div className=" gredient p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700 transition-all duration-300 hover:border-teal-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -345,7 +346,7 @@ const Gitactivity = () => {
             </div>
 
             {/* Contributions Graph */}
-            <div ref={contributionsRef} className="bg-gray-800 p-6 rounded-xl shadow-lg mb-8 border border-gray-700 transition-all duration-300 hover:border-green-500">
+            <div ref={contributionsRef} className="gredient p-6 rounded-xl shadow-lg mb-8 border border-gray-700 transition-all duration-300 hover:border-green-500">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-3 sm:mb-0">
                   <svg
@@ -370,7 +371,7 @@ const Gitactivity = () => {
                   <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                    className="w-full sm:w-auto p-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                    className="w-full sm:w-auto p-2 rounded-lg border border-gray-600  text-white focus:outline-none focus:ring-1 focus:ring-gray-500 transition-all duration-300"
                   >
                     {generateYearOptions().map((year) => (
                       <option key={year} value={year}>
@@ -381,7 +382,7 @@ const Gitactivity = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-800 rounded-xl shadow-lg mt-3 border-gray-700 p-2">
+              <div className=" rounded-xl shadow-lg mt-3 border-gray-700 p-2">
                 <div className="overflow-x-auto flex justify-center">
                   <GitHubCalendar
                     key={`${username}-${selectedYear}`}
@@ -400,16 +401,16 @@ const Gitactivity = () => {
             </div>
 
             {/* Recent Repositories */}
-            <div ref={reposRef} className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 transition-all duration-300 hover:border-yellow-500">
-              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                <RepositoryIcon className="w-7 h-7 text-yellow-400" /> Recent Repositories
+            <div ref={reposRef} className=" p-6 rounded-xl shadow-lg   transition-all duration-300 hover:border-gray-500">
+              <h2 className="gredient text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <RepositoryIcon className=" w-7 h-7 text-yellow-400" /> Recent Repositories
               </h2>
               {repos.length > 0 ? (
-                <ul className="space-y-4">
+                <ul className="gredient space-y-4">
                   {repos.map((repo) => (
                     <li
                       key={repo.id}
-                      className="repo-item bg-gray-900 p-4 rounded-lg shadow-md border border-gray-700 hover:shadow-xl hover:border-purple-600 transition-all duration-200"
+                      className="repo-item  p-4 rounded-lg shadow-md border border-gray-700 hover:shadow-xl hover:border-purple-600 transition-all duration-200"
                     >
                       <a
                         href={repo.html_url}

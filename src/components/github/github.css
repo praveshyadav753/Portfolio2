@@ -1,0 +1,5 @@
+.gredient {
+   background-image:  radial-gradient(circle at 15% 85%, rgba(48, 49, 136, 0.349) 0%, transparent 50%),
+    radial-gradient(circle at 85% 15%, rgba(97, 5, 10, 0.164) 0%, transparent 60%);
+   background-color: rgba(18, 25, 32, 0.1);
+}

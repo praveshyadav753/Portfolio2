@@ -32,7 +32,7 @@ const HorizontalProjectList = ({ projectsData }) => {
       cardRefs.current.forEach((el, i) => {
         gsap.set(el, {
           position: 'absolute',
-          top: '50%',
+          top: '40%',
           x: i * CARD_WIDTH,
           y: '-50%',
           opacity: 0,

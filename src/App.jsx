@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import workExperiences from './components/work/experiencedata'
 import projectsData from './components/projects/projectdata';
 
+
 // Register the ScrollTrigger plugin with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
@@ -61,7 +62,15 @@ function App() {
 
     return (
         // The main container for your app, acting as the ScrollTrigger's trigger
-        <div  className='bg-gradient-to-br from-gray-900 to-gray-800 relative  min-h-screen'>
+        <div  className='bg-gradient-to-r  from-black  to-black relative  min-h-screen' style={{
+
+        // backgroundImage: `
+        //   linear-gradient(to right, black, #111827), /* from-black to-gray-900 */
+        //   radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 50%), /* before:bg-[radial...] */
+        //   radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%) /* after:bg-[radial...] */
+        // `,
+        
+      }}>
             {/* Background circles container */}
             <div ref={hello} className="absolute h-[400px] inset-0 top-1  z-1 pointer-events-none">
                 {/* Each background circle with its ref assignment */}
@@ -82,6 +91,7 @@ function App() {
             <Gitactivity />
             <ContactMe />
             <Footer/>
+            
         </div>
     );
 }

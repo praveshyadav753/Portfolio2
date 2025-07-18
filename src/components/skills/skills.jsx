@@ -117,7 +117,8 @@ const SkillsSection = ({ skills }) => {
       id="skills"
       ref={skillsRef}
       className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden text-white"
-    >
+    >                
+
       {/* Header Section */}
       <div className="w-full flex flex-col items-center justify-start pt-16 z-20">
         <h2
