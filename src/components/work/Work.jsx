@@ -161,20 +161,4 @@ const WorkExperience = ({ workExperiences }) => {
 
 export default WorkExperience;
 
-// Example usage in a parent component (e.g., App.js):
-/*
-import React from 'react';
-import WorkExperience from './WorkExperience'; // Adjust path as needed
-import { workExperiences } from './workExperiencesData'; // Import the data
 
-const App = () => {
-  return (
-    <div className="App">
-      <WorkExperience workExperiences={workExperiences} />
-      // ... other sections of your portfolio
-    </div>
-  );
-};
-
-export default App;
-*/

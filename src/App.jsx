@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import mySkillsData from './components/skills/SkillsData';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import workExperiences from './components/work/experiencedata'
+import projectsData from './components/projects/projectdata';
 
 // Register the ScrollTrigger plugin with GSAP
 gsap.registerPlugin(ScrollTrigger);
@@ -77,7 +78,7 @@ function App() {
             <SkillsSection skills={mySkillsData}/>
             <WorkExperience workExperiences={workExperiences} />
 
-            <ProjectsSection/>
+            <ProjectsSection projectsData={projectsData}/>
             <Gitactivity />
             <ContactMe />
             <Footer/>

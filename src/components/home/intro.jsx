@@ -75,7 +75,7 @@ function Intro() { // Renamed function to Intro for consistency and best practic
                         <a href="https://github.com/NancySri453" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
                             <Github size={32} />
                         </a>
-                        <a href="linkedin.com/in/nancy-srivastava-9742bb213" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
+                        <a href="https://linkedin.com/in/nancy-srivastava-9742bb213" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">
                             <Linkedin size={32} />
                         </a>
                         <a href="mailto:nansri1905@gmail.com" className="text-gray-400 hover:text-white transition-transform duration-300 hover:scale-110">

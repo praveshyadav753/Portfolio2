@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
-import GitHubCalendar from 'react-github-calendar'; // Import the GitHubCalendar component
+import React, { useState, useEffect, useRef } from "react";
+import GitHubCalendar from 'react-github-calendar';
+import { gsap } from "gsap"; // Import GSAP
 
-
-// Icons from lucide-react (assuming it's available in the environment)
-// If not, these can be replaced with simple text or inline SVGs.
-// For this example, I'll use simple inline SVGs as lucide-react might not be directly available without npm install.
-
+// SVG Icons (keeping them as is, they are good!)
 const GithubIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -98,6 +95,13 @@ const Gitactivity = () => {
   const [error, setError] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // State for selected year
 
+  // Refs for GSAP animations
+  const titleRef = useRef(null);
+  const profileRef = useRef(null);
+  const statsRef = useRef(null);
+  const contributionsRef = useRef(null);
+  const reposRef = useRef(null);
+
   // Function to fetch GitHub data
   const fetchGitHubData = async () => {
     setLoading(true);
@@ -119,7 +123,7 @@ const Gitactivity = () => {
       // Fetch repositories, sorted by pushed_at for recent repos
       const reposResponse = await fetch(
         `https://api.github.com/users/${username}/repos?sort=pushed&direction=desc&per_page=2`
-      ); // Get 5 most recent
+      ); // Get 2 most recent as in original code
       if (!reposResponse.ok) {
         throw new Error(
           `Failed to fetch repositories: ${reposResponse.statusText}`
@@ -151,14 +155,59 @@ const Gitactivity = () => {
     fetchGitHubData();
   }, [username]); // Dependency array includes username so it refetches when username changes
 
+  // GSAP Animations
+  useEffect(() => {
+    if (!loading && userData) {
+      // Animate main container and sections
+      gsap.fromTo(".main-content-container",
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+      );
+
+      gsap.fromTo(titleRef.current,
+        { opacity: 0, y: -20 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out", delay: 0.2 }
+      );
+
+      gsap.fromTo(profileRef.current,
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)", delay: 0.4 }
+      );
+
+      gsap.fromTo(statsRef.current.children,
+        { opacity: 0, x: -50 },
+        { opacity: 1, x: 0, duration: 0.7, ease: "power2.out", stagger: 0.2, delay: 0.6 }
+      );
+
+      gsap.fromTo(contributionsRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out", delay: 0.8 }
+      );
+
+      gsap.fromTo(reposRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out", delay: 1 }
+      );
+
+      // Animate repo list items
+      gsap.fromTo(".repo-item",
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.6, ease: "power1.out", stagger: 0.1, delay: 1.2 }
+      );
+    }
+  }, [loading, userData]); // Rerun animations when data loads
+
   return (
-    <div className="min-h-screen  p-4 font-inter text-gray-100">
-      <div className=" mx-auto  shadow-2xl rounded-2xl p-6 lg:px-16 md:p-8 ">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-6 text-center flex items-center justify-center gap-3">
+    <div className="min-h-screen relative p-4 font-inter text-gray-100 overflow-hidden">
+      {/* Subtle Blob Backgrounds */}
+      <div className="absolute top-10 left-10 w-64 h-64 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+      <div className="absolute top-1/4 right-20 w-80 h-80 bg-pink-600 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+      <div className="absolute bottom-10 left-1/3 w-72 h-72 bg-teal-600 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+
+      <div className="relative z-10 mx-auto max-w-6xl shadow-2xl rounded-2xl p-6 lg:px-16 md:p-8 bg-gray-900/80 backdrop-blur-sm main-content-container">
+        <h1 ref={titleRef} className="text-3xl md:text-4xl font-extrabold text-white mb-6 text-center flex items-center justify-center gap-3">
           <GithubIcon className="w-9 h-9 text-purple-400" /> GitHub Overview
         </h1>
-
-        {/* Username Input and Year Selector */}
 
         {error && (
           <div
@@ -179,7 +228,7 @@ const Gitactivity = () => {
         {!loading && userData && (
           <>
             {/* User Profile Summary */}
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 bg-gray-800 p-6 rounded-xl mb-8 shadow-lg border border-gray-700">
+            <div ref={profileRef} className="flex flex-col md:flex-row items-center md:items-start gap-6 bg-gray-800 p-6 rounded-xl mb-8 shadow-lg border border-gray-700 transition-all duration-300 hover:border-purple-500">
               <img
                 src={
                   userData.avatar_url ||
@@ -255,9 +304,9 @@ const Gitactivity = () => {
             </div>
 
             {/* Stats and Contributions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {/* Total Repositories */}
-              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700">
+              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700 transition-all duration-300 hover:border-pink-500">
                 <RepositoryIcon className="w-10 h-10 text-pink-400 mb-3" />
                 <h3 className="text-xl font-semibold text-gray-200">
                   Total Repositories
@@ -268,7 +317,7 @@ const Gitactivity = () => {
               </div>
 
               {/* Followers */}
-              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700">
+              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col items-center justify-center text-center border border-gray-700 transition-all duration-300 hover:border-teal-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -296,77 +345,71 @@ const Gitactivity = () => {
             </div>
 
             {/* Contributions Graph */}
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-8 border border-gray-700">
-                <div className="flex">
-              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-bar-chart-2 w-7 h-7 text-green-400"
-                >
-                  <line x1="18" x2="18" y1="20" y2="10"></line>
-                  <line x1="12" x2="12" y1="20" y2="4"></line>
-                  <line x1="6" x2="6" y1="20" y2="14"></line>
-                </svg>
-                Contributions
-              </h2>
-            <div className="ml-3">
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="w-full sm:w-auto p-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
-              >
-                {generateYearOptions().map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-            </div>
-
-              <div className="bg-gray-800  rounded-xl shadow-lg mb-8 mt-3 border-gray-700">
-              
-              <div className="overflow-x-auto flex justify-center">
-                <GitHubCalendar
-                  key={`${username}-${selectedYear}`} // Key to force re-render on user/year change
-                  username={username}
-                  year={selectedYear} // Pass the selected year
-                  colorScheme="dark" // Use dark color scheme
-                  blockSize={12} // Adjust block size for better fit
-                  blockMargin={3} // Adjust block margin
-                  fontSize={14} // Adjust font size
-                 
-                  theme={{
-                    light: ['#ebedf0', '#c6e48b', '#7bc96d', '#239a3b', '#196127'], // Default light, not used for dark theme
-                    dark: ['#1E1E2C', '#4A0082', '#6A0DAD', '#8A2BE2', '#9932CC'], // Dark background, then shades of purple
-                  }}
-                />
+            <div ref={contributionsRef} className="bg-gray-800 p-6 rounded-xl shadow-lg mb-8 border border-gray-700 transition-all duration-300 hover:border-green-500">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-3 sm:mb-0">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-bar-chart-2 w-7 h-7 text-green-400"
+                  >
+                    <line x1="18" x2="18" y1="20" y2="10"></line>
+                    <line x1="12" x2="12" y1="20" y2="4"></line>
+                    <line x1="6" x2="6" y1="20" y2="14"></line>
+                  </svg>
+                  Contributions
+                </h2>
+                <div className="ml-0 sm:ml-3">
+                  <select
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    className="w-full sm:w-auto p-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                  >
+                    {generateYearOptions().map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              
-            </div>
 
+              <div className="bg-gray-800 rounded-xl shadow-lg mt-3 border-gray-700 p-2">
+                <div className="overflow-x-auto flex justify-center">
+                  <GitHubCalendar
+                    key={`${username}-${selectedYear}`}
+                    username={username}
+                    year={selectedYear}
+                    colorScheme="dark"
+                    blockSize={12}
+                    blockMargin={3}
+                    fontSize={14}
+                    theme={{
+                      dark: ['#1E1E2C', '#4A0082', '#6A0DAD', '#8A2BE2', '#9932CC'], // Dark background, then shades of purple
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Recent Repositories */}
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+            <div ref={reposRef} className="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700 transition-all duration-300 hover:border-yellow-500">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                <RepositoryIcon className="w-7 h-7 text-yellow-400" /> Recent
-                Repositories
+                <RepositoryIcon className="w-7 h-7 text-yellow-400" /> Recent Repositories
               </h2>
               {repos.length > 0 ? (
                 <ul className="space-y-4">
                   {repos.map((repo) => (
                     <li
                       key={repo.id}
-                      className="bg-gray-900 p-4 rounded-lg shadow-md border border-gray-700 hover:shadow-xl transition-shadow duration-200"
+                      className="repo-item bg-gray-900 p-4 rounded-lg shadow-md border border-gray-700 hover:shadow-xl hover:border-purple-600 transition-all duration-200"
                     >
                       <a
                         href={repo.html_url}
@@ -379,9 +422,9 @@ const Gitactivity = () => {
                       <p className="text-gray-300 text-sm mb-2">
                         {repo.description || "No description provided."}
                       </p>
-                      <div className="flex items-center gap-4 text-gray-400 text-sm">
+                      <div className="flex items-center gap-4 text-gray-400 text-sm flex-wrap">
                         {repo.language && (
-                          <span className="flex items-center gap-1">
+                          <span className="flex items-center gap-1 bg-gray-700 px-2 py-1 rounded-full text-xs">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="16"
@@ -401,14 +444,14 @@ const Gitactivity = () => {
                           </span>
                         )}
                         <span className="flex items-center gap-1">
-                          <StarIcon className="w-4 h-4" />
+                          <StarIcon className="w-4 h-4 text-yellow-500" />
                           {repo.stargazers_count}
                         </span>
                         <span className="flex items-center gap-1">
-                          <GitForkIcon className="w-4 h-4" />
+                          <GitForkIcon className="w-4 h-4 text-blue-500" />
                           {repo.forks_count}
                         </span>
-                        <span className="text-gray-500 ml-auto">
+                        <span className="text-gray-500 ml-auto text-xs sm:text-sm">
                           Updated:{" "}
                           {new Date(repo.pushed_at).toLocaleDateString()}
                         </span>

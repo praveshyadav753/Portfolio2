@@ -1,176 +1,161 @@
-import React, { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger'; // Correct import for ScrollTrigger
-import ProjectCard from './projectcard'; // Assuming ProjectCard.js is in the same directory
+import gsap from "gsap";
+import React, { useEffect, useRef, useMemo } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ProjectCard from './projectcard';
 
-// Register GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
-// Define project data to be used by the RadialProjectList
-// In a real application, this data might come from an API or a parent component.
-const projectsData = [
-    {
-        id: 1,
-        title: "E-commerce Platform",
-        description: "A full-stack e-commerce solution built with React, Node.js, and MongoDB. Features user authentication, product management, and secure payment processing.",
-        imageUrl: "https://placehold.co/600x400/FF00FF/FFFFFF?text=E-commerce+Platform", // Neon Pink
-        githubUrl: "https://github.com/yourusername/ecommerce-platform",
-        liveDemoUrl: "https://live-ecommerce.yourdomain.com"
-    },
-    {
-        id: 2,
-        title: "Task Management App",
-        description: "A responsive web application for managing tasks and projects, featuring drag-and-drop functionality and real-time updates using Firebase.",
-        imageUrl: "https://placehold.co/600x400/00FFFF/000000?text=Task+Manager+App", // Neon Cyan
-        githubUrl: "https://github.com/yourusername/task-manager-app",
-        liveDemoUrl: "https://task-manager.yourdomain.com"
-    },
-    {
-        id: 3,
-        title: "AI Chatbot Interface",
-        description: "An interactive AI chatbot interface developed with Python (Flask backend) and React (frontend), leveraging natural language processing for dynamic conversations.",
-        imageUrl: "https://placehold.co/600x400/FFFF00/000000?text=AI+Chatbot+Interface", // Neon Yellow
-        githubUrl: "https://github.com/yourusername/ai-chatbot",
-        liveDemoUrl: "https://chatbot.yourdomain.com"
-    },
-    {
-        id: 4,
-        title: "Personal Blog & CMS",
-        description: "A content management system (CMS) and personal blog built with Next.js and headless CMS (Strapi). Optimized for SEO and fast loading times.",
-        imageUrl: "https://placehold.co/600x400/00FF00/000000?text=Personal+Blog", // Neon Green
-        githubUrl: "https://github.com/yourusername/personal-blog",
-        liveDemoUrl: "https://blog.yourdomain.com"
-    },
-    {
-        id: 5,
-        title: "Weather Dashboard",
-        description: "A real-time weather dashboard fetching data from a public API, displaying current conditions and forecasts with interactive charts.",
-        imageUrl: "https://placehold.co/600x400/FF6600/FFFFFF?text=Weather+Dashboard", // Neon Orange
-        githubUrl: "https://github.com/yourusername/weather-dashboard",
-        liveDemoUrl: "https://weather.yourdomain.com"
-    },
-    {
-        id: 6,
-        title: "Recipe Finder App",
-        description: "An application that allows users to search for recipes based on ingredients, dietary restrictions, and cuisine type, using an external recipe API.",
-        imageUrl: "https://placehold.co/600x400/9900FF/FFFFFF?text=Recipe+Finder", // Neon Purple
-        githubUrl: "https://github.com/yourusername/recipe-finder",
-        liveDemoUrl: "https://recipes.yourdomain.com"
-    }
-];
+const CARD_WIDTH = 340;
+const ACTIVE_RANGE = 350;
+const Z_INDEX_BASE = 10;
 
-const RadialProjectList = () => { 
-  const containerRef = useRef(null);
+const HorizontalProjectList = ({ projectsData }) => {
+  const sectionRef = useRef(null);
+  const headerRef = useRef(null);
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const cardsContainerRef = useRef(null);
   const cardRefs = useRef([]);
-  const totalCards = projectsData.length; // Use internal projectsData
+
+  const totalCards = useMemo(() => projectsData.length, [projectsData]);
 
   useEffect(() => {
-    // Ensure GSAP and ScrollTrigger are available
-    if (!gsap || !ScrollTrigger) {
-      console.error("GSAP or ScrollTrigger not loaded.");
-      return;
-    }
+    if (!gsap || !ScrollTrigger) return;
 
-    // Define the ellipse dimensions and center point for the radial layout
-    const radiusX = 500; // Horizontal radius of the ellipse
-    const radiusY = 600; // Vertical radius of the ellipse
-    // Center the ellipse horizontally in the viewport
-    const centerX = window.innerWidth / 2;
-    // Position the center of the ellipse lower on the page, so cards start from below
-    const centerY = window.innerHeight * 1.4;
+    const ctx = gsap.context(() => {
+      // total width of all cards
+      const contentWidth = totalCards * CARD_WIDTH;
+      const travelDist = Math.max(0, contentWidth - window.innerWidth + CARD_WIDTH);
+      const viewportCenter = window.innerWidth / 2;
 
-    // Calculate the angular gap between each card for even distribution
-    const angleGap = (Math.PI * 2) / totalCards;
-
-    // Set initial positions for each card using GSAP's .set()
-    cardRefs.current.forEach((card, i) => {
-      // Calculate the angle for the current card
-      // - Math.PI / 2 makes the first card start at the top of the ellipse
-      const angle = i * angleGap - Math.PI / 2;
-      // Calculate X and Y coordinates on the ellipse
-      const x = centerX + radiusX * Math.cos(angle);
-      const y = centerY + radiusY * Math.sin(angle);
-
-      // Apply initial positioning and styling using GSAP
-      gsap.set(card, {
-        x, // X position
-        y, // Y position
-        transform: 'translate(-50%, -50%)', // Center the card element
-        position: 'absolute', // Enable absolute positioning
-        // Optional: initial opacity and scale for a fade-in effect with the scroll
-        opacity: 0.8,
-        scale: 0.8
+      // initial card setup
+      cardRefs.current.forEach((el, i) => {
+        gsap.set(el, {
+          position: 'absolute',
+          top: '50%',
+          x: i * CARD_WIDTH,
+          y: '-50%',
+          opacity: 0,
+          scale: 0.9,
+          zIndex: Z_INDEX_BASE,
+        });
       });
-    });
 
-    // Create a GSAP timeline linked to ScrollTrigger for the animation
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current, // The element that triggers the animation
-        start: 'top top', // Animation starts when the top of the trigger hits the top of the viewport
-        end: '+=2000', // Animation lasts for 2000 pixels of scroll
-        scrub: true, // Smoothly link animation progress to scroll position
-        pin: true, // Pin the trigger element in place while the animation runs
-        anticipatePin: 1, // Pre-render pinning to avoid jumpiness
-      
-      },
-    });
+      // compute scroll duration
+      const getDuration = () => {
+        const h = headerRef.current?.offsetHeight || 0;
+        return h * 1.5 + travelDist + window.innerHeight * 0.5;
+      };
 
-    // Animate each card along the ellipse path
-    cardRefs.current.forEach((card, i) => {
-      const baseAngle = i * angleGap; // Base angle for each card
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: () => `+=${getDuration()}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onRefresh: self => {
+            self.end = `+=${getDuration()}`;
+            self.update();
+          }
+        }
+      });
 
-      tl.to(card, {
-        // onUpdate function to continuously calculate and update card positions
-        onUpdate: function () {
-          // Get the current progress of the timeline (0 to 1)
-          const progress = tl.progress();
-          // Calculate the new angle based on scroll progress
-          // progress * Math.PI * 2 makes cards complete a full rotation
-          const angle = baseAngle + progress * Math.PI * 2 - Math.PI / 2;
-          // Recalculate X and Y based on the new angle
-          const x = centerX + radiusX * Math.cos(angle);
-          const y = centerY + radiusY * Math.sin(angle);
+      // header animations
+      tl.from([titleRef.current, subtitleRef.current], {
+        y: 50,
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power3.out',
+        stagger: 0.1
+      }, 0);
 
-          // Update card position and also scale/opacity for a dynamic effect
-          gsap.set(card, {
-            x,
-            y,
-            // Scale cards based on their position (closer to center = larger)
-            scale: 0.8 + (1 - Math.abs(Math.sin(angle))) * 0.4, // Scale between 0.8 and 1.2
-            // Adjust opacity based on position (more visible when closer to center)
-            opacity: 0.5 + (1 - Math.abs(Math.sin(angle))) * 0.5
-          });
+      // fade cards + center container
+      tl.to(cardsContainerRef.current, {
+        y: 'center',
+        duration: 0.2,
+        ease: 'power2.out'
+      }, 0.3)
+        .to(cardRefs.current, {
+          opacity: 1,
+          duration: 0.2,
+          ease: 'power2.out'
+        }, 0.3);
 
-          // Optional: Z-index for layering, making cards in front appear on top
-          // This creates a sense of depth as they rotate
-          const zIndex = Math.round(100 * (1 - Math.abs(Math.sin(angle))));
-          gsap.set(card, { zIndex });
+      // horizontal scroll
+      tl.to(cardRefs.current, {
+        x: `-=${travelDist}`,
+        ease: 'none'
+      }, 0.3);
+
+      // dynamic scale, opacity, zIndex
+      tl.to(cardRefs.current, {
+        scale: (i, el) => {
+          const c = el.getBoundingClientRect().left + el.clientWidth/2;
+          const d = Math.abs(c - viewportCenter);
+          const n = Math.min(1, d / ACTIVE_RANGE);
+          return gsap.utils.interpolate(1, 0.9, n);
         },
-        duration: 1, // Duration of this specific tween within the timeline
-        ease: 'none', // Linear ease for smooth, consistent rotation
-      }, 0); // Start all card animations at the beginning of the timeline
-    });
+        opacity: (i, el) => {
+          const c = el.getBoundingClientRect().left + el.clientWidth/2;
+          const d = Math.abs(c - viewportCenter);
+          const n = Math.min(1, d / ACTIVE_RANGE);
+          return gsap.utils.interpolate(1, 0.8, n);
+        },
+        zIndex: (i, el) => {
+          const c = el.getBoundingClientRect().left + el.clientWidth/2;
+          const d = Math.abs(c - viewportCenter);
+          const n = Math.min(1, d / ACTIVE_RANGE);
+          // higher zIndex when closer
+          return Math.round(gsap.utils.interpolate(Z_INDEX_BASE+100, Z_INDEX_BASE, n));
+        },
+        immediateRender: false,
+        ease: 'none'
+      }, "<");
 
-    // Clean up ScrollTrigger instances on component unmount
-    return () => ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-  }, [totalCards]); // Re-run effect if totalCards changes
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [totalCards, projectsData]);
 
   return (
-    <div className="w-full min-h-screen">
-      {/* Scroll-animated section */}
+    <div
+      id="projects"
+      ref={sectionRef}
+      className="w-full min-h-[100vh] relative overflow-hidden text-white"
+    >
       <div
-        ref={containerRef}
-        className="relative w-full h-screen overflow-hidden bg-[#0f172a]" // Dark background for neon effect
+        ref={headerRef}
+        className="w-full pt-10 pb-5 flex flex-col items-center z-20"
       >
-        {/* Map through projectsData to render ProjectCard components */}
-        {projectsData.map((project, index) => (
+        <h2
+          ref={titleRef}
+          className="text-5xl md:text-7xl font-extrabold text-center mb-4
+                     bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500"
+        >
+          Featured Projects
+        </h2>
+        <h3
+          ref={subtitleRef}
+          className="text-xl md:text-2xl text-center mb-16
+                     bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500"
+        >
+          A showcase of my recent work and creations.
+        </h3>
+      </div>
+
+      <div
+        ref={cardsContainerRef}
+        className="relative w-full h-[500px] overflow-hidden"
+      >
+        {projectsData.map((project, idx) => (
           <div
-            key={project.id} // Use project.id for unique key
-            ref={(el) => (cardRefs.current[index] = el)} // Assign ref to each card container
-            className="w-[340px] h-[420px]" // Fixed dimensions for the card container
+            key={project.id}
+            ref={el => (cardRefs.current[idx] = el)}
+            className="w-[340px] h-[420px]"
           >
-            {/* Render ProjectCard, passing the individual project object */}
             <ProjectCard project={project} />
           </div>
         ))}
@@ -179,4 +164,4 @@ const RadialProjectList = () => {
   );
 };
 
-export default RadialProjectList;
+export default HorizontalProjectList;
